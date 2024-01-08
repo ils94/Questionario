@@ -1,25 +1,32 @@
 import sqlite3
 import variaveisGlobais
 import dbQueries
+from tkinter import messagebox
 
 
 def inserir(dados):
-    conn = sqlite3.connect(variaveisGlobais.dbNAME)
-    cursor = conn.cursor()
+    try:
+        conn = sqlite3.connect(variaveisGlobais.dbNAME)
+        cursor = conn.cursor()
 
-    cursor.execute(dbQueries.insert_query, dados)
+        cursor.execute(dbQueries.insert_query, dados)
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        messagebox.showerror("Error", str(e))
 
 
 def selecionar_questao():
-    conn = sqlite3.connect(variaveisGlobais.dbNAME)
-    cursor = conn.cursor()
+    try:
+        conn = sqlite3.connect(variaveisGlobais.dbNAME)
+        cursor = conn.cursor()
 
-    cursor.execute(dbQueries.select_query)
-    random_row = cursor.fetchone()
+        cursor.execute(dbQueries.select_query)
+        random_row = cursor.fetchone()
 
-    conn.close()
+        conn.close()
 
-    return random_row
+        return random_row
+    except Exception as e:
+        messagebox.showerror("Error", str(e))

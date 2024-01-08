@@ -17,5 +17,3 @@ def criar_db():
         conn.close()
 
         variaveisGlobais.dbNAME = output_file
-
-        print(variaveisGlobais.dbNAME)

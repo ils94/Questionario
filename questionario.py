@@ -14,8 +14,6 @@ erros = 0
 def conferir_resposta():
     global correta, acertos, erros
 
-    print(var.get())
-
     user_choice = var.get()
 
     correct_answer = correta.upper()
@@ -104,8 +102,7 @@ def convert_and_display(string):
         image_data = base64.b64decode(base64_string)
 
         image = Image.open(io.BytesIO(image_data))
-        # Resize the image to a specific width and height
-        resized_image = image.resize((200, 200))  # Change the dimensions as needed
+        resized_image = image.resize((200, 200))
 
         resized_image = ImageTk.PhotoImage(resized_image)
 
@@ -115,21 +112,17 @@ def convert_and_display(string):
         label_imagem.config(image="")
 
 
-# Create a Tkinter window
 root = tk.Tk()
 root.state("zoomed")
 root.minsize(800, 600)
 root.title("PyQuestionario")
 
-# Create a menu bar
 menu_bar = tk.Menu(root)
 root.config(menu=menu_bar)
 
-# Create a menu button
 menu_button = tk.Menu(menu_bar, tearoff=0)
 menu_bar.add_cascade(label="Menu", menu=menu_button)
 
-# Add options to the menu button
 menu_button.add_command(label="Carregar Materia", command=carregar_materia)
 
 fonte = ("Arial", 14)
@@ -151,7 +144,6 @@ label_corretas.pack(side=tk.RIGHT, padx=5, pady=5)
 frame_enunciado = tk.Frame(root)
 frame_enunciado.pack(fill=tk.X, padx=5, pady=5)
 
-# Create a label
 label_enunciado = tk.Label(frame_enunciado, text="...", anchor=tk.W, font=fonte)
 label_enunciado.pack(side=tk.LEFT)
 
@@ -160,9 +152,6 @@ frame_imagem.pack(fill=tk.X, padx=5, pady=5)
 
 label_imagem = tk.Label(root, anchor=tk.W, font=fonte)
 label_imagem.pack(padx=5, pady=10)
-
-# imagem_button = tk.Button(frame_imagem, text="Mostrar Imagem", command=show_checked_items, font=fonte)
-# imagem_button.pack(side=tk.LEFT)
 
 frame_alternativas = tk.Frame(root)
 frame_alternativas.pack(fill=tk.X, padx=5, pady=10)
@@ -209,9 +198,6 @@ check_button5.pack(side=tk.LEFT)
 frame_imagem = tk.Frame(root)
 frame_imagem.pack(side=tk.BOTTOM, fill=tk.X, padx=5, pady=5)
 
-# imagem_button = tk.Button(frame_imagem, text="Mostrar Imagem", command=show_checked_items, font=fonte)
-# imagem_button.pack(side=tk.LEFT)
-
 proxima_questao_button = tk.Button(frame_imagem, text="Iniciar", command=carregar_questao, font=fonte)
 proxima_questao_button.pack(side=tk.LEFT)
 
@@ -220,5 +206,4 @@ proxima_questao_button.config(state="disabled")
 for button in [check_button1, check_button2, check_button3, check_button4, check_button5]:
     button.config(state="disabled")
 
-# Run the Tkinter main loop
 root.mainloop()
