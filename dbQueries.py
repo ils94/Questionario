@@ -25,7 +25,7 @@ Alternativa_C = ?,
 Alternativa_D = ?,
 Alternativa_E = ?,
 Alternativa_Correta = ?,
-Explicacao = ?,
+Explicacao = ?
 WHERE ID = ?
 """
 

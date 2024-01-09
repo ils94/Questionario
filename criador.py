@@ -6,6 +6,37 @@ import variaveisGlobais
 import cleanText
 
 
+def on_click(event):
+    item = treeview.item(treeview.focus())
+    values = item["values"]
+
+    variaveisGlobais.ID = values[0]
+
+    entry_1.delete(0, tk.END)
+    entry_2.delete(0, tk.END)
+    entry_3.delete(0, tk.END)
+    entry_4.delete(0, tk.END)
+    entry_5.delete(0, tk.END)
+    entry_6.delete(0, tk.END)
+    entry_7.delete(0, tk.END)
+    entry_8.delete(0, tk.END)
+    entry_9.delete("1.0", tk.END)
+
+    entry_1.insert(tk.END, values[1])
+    entry_2.insert(tk.END, values[2])
+    entry_3.insert(tk.END, values[3])
+    entry_4.insert(tk.END, values[4])
+    entry_5.insert(tk.END, values[5])
+    entry_6.insert(tk.END, values[6])
+    entry_7.insert(tk.END, values[7])
+    entry_8.insert(tk.END, values[8])
+    entry_9.insert(tk.END, values[9])
+
+
+def pesquisar(event):
+    dbAcoes.procurar()
+
+
 def inserir():
     if entry_1.get() == "" or entry_3.get() == "" or entry_4.get() == "" or entry_5.get() == "" or entry_6.get() == "" or entry_7.get() == "" or entry_8.get() == "":
         messagebox.showerror("Erro", "É necessario o Enunciado, as alternativas e a alternativa correta.")
@@ -21,6 +52,31 @@ def inserir():
                  entry_9.get("1.0", tk.END))
 
         dbAcoes.inserir(dados)
+
+
+def alterar():
+    if not variaveisGlobais.ID:
+        return
+
+    if entry_1.get() == "":
+        messagebox.showerror("Erro", "É necessario o Enunciado.")
+    else:
+        dados = (cleanText.clean_string(entry_1.get()),
+                 cleanText.clean_string(entry_2.get()),
+                 cleanText.clean_string(entry_3.get()),
+                 cleanText.clean_string(entry_4.get()),
+                 cleanText.clean_string(entry_5.get()),
+                 cleanText.clean_string(entry_6.get()),
+                 cleanText.clean_string(entry_7.get()),
+                 cleanText.clean_string(entry_8.get()),
+                 entry_9.get("1.0", tk.END),
+                 variaveisGlobais.ID)
+
+        dbAcoes.alterar(dados)
+
+
+def deletar():
+    dbAcoes.deletar(variaveisGlobais.ID)
 
 
 def carregar_db():
@@ -136,10 +192,10 @@ frame_2.pack(fill=tk.X, pady=5)
 button_adicionar = tk.Button(frame_2, text="Adicionar", width=15, command=inserir)
 button_adicionar.pack(side=tk.LEFT)
 
-button_editar = tk.Button(frame_2, text="Editar", width=15)
+button_editar = tk.Button(frame_2, text="Editar", width=15, command=alterar)
 button_editar.pack(side=tk.LEFT, padx=5)
 
-button_deletar = tk.Button(frame_2, text="Deletar", width=15)
+button_deletar = tk.Button(frame_2, text="Deletar", width=15, command=deletar)
 button_deletar.pack(side=tk.RIGHT)
 
 tree_frame = tk.Frame(root)
@@ -178,6 +234,8 @@ treeview.configure(xscrollcommand=hsb.set)
 
 treeview.grid(row=0, column=0, sticky="nsew")
 
+treeview.bind("<<TreeviewSelect>>", on_click)
+
 pesquisar_frame = tk.Frame(root)
 pesquisar_frame.pack(fill=tk.X, padx=2)
 
@@ -186,5 +244,9 @@ label_pesquisar.pack(side=tk.LEFT)
 
 entry_pesquisar = tk.Entry(pesquisar_frame)
 entry_pesquisar.pack(side=tk.LEFT, fill=tk.X, expand=True, pady=5)
+entry_pesquisar.bind("<Return>", pesquisar)
+
+variaveisGlobais.treeview = treeview
+variaveisGlobais.pesquisar_entry = entry_pesquisar
 
 root.mainloop()
