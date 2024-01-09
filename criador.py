@@ -3,20 +3,22 @@ from tkinter import ttk, filedialog, messagebox
 import criarDB
 import dbAcoes
 import variaveisGlobais
+import cleanText
 
 
 def inserir():
     if entry_1.get() == "" or entry_3.get() == "" or entry_4.get() == "" or entry_5.get() == "" or entry_6.get() == "" or entry_7.get() == "" or entry_8.get() == "":
         messagebox.showerror("Erro", "É necessario o Enunciado, as alternativas e a alternativa correta.")
     else:
-        dados = (entry_1.get(),
-                 entry_2.get(),
-                 entry_3.get(),
-                 entry_4.get(),
-                 entry_5.get(),
-                 entry_6.get(),
-                 entry_7.get(),
-                 entry_8.get())
+        dados = (cleanText.clean_string(entry_1.get()),
+                 cleanText.clean_string(entry_2.get()),
+                 cleanText.clean_string(entry_3.get()),
+                 cleanText.clean_string(entry_4.get()),
+                 cleanText.clean_string(entry_5.get()),
+                 cleanText.clean_string(entry_6.get()),
+                 cleanText.clean_string(entry_7.get()),
+                 cleanText.clean_string(entry_8.get()),
+                 entry_9.get("1.0", tk.END))
 
         dbAcoes.inserir(dados)
 
@@ -116,6 +118,18 @@ label_8.pack(side=tk.LEFT)
 entry_8 = tk.Entry(frame_1_h)
 entry_8.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
+frame_1_i = tk.Frame(frame_1)
+frame_1_i.pack(fill=tk.X, expand=True)
+
+frame_1_i_a = tk.Frame(frame_1_i)
+frame_1_i_a.pack(fill=tk.X, expand=True)
+
+label_9 = tk.Label(frame_1_i_a, text="Explicação:", width=width, anchor=tk.W)
+label_9.pack(side=tk.LEFT)
+
+entry_9 = tk.Text(frame_1_i, height=10)
+entry_9.pack(fill=tk.BOTH, expand=True)
+
 frame_2 = tk.Frame(frame_1)
 frame_2.pack(fill=tk.X, pady=5)
 
@@ -131,20 +145,10 @@ button_deletar.pack(side=tk.RIGHT)
 tree_frame = tk.Frame(root)
 tree_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-
-def fixed_map(option):
-    return [elm for elm in style.map("Treeview", query_opt=option)
-            if elm[:2] != ("!disabled", "!selected")]
-
-
-style = ttk.Style()
-
-style.map("Treeview", foreground=fixed_map("foreground"), background=fixed_map("background"))
-
 treeview = ttk.Treeview(tree_frame, show="headings", selectmode="browse")
 
 treeview['columns'] = ("ID", "ENUNCIADO", "IMAGEM", "ALTERNATIVA A", "ALTERNATIVA B", "ALTERNATIVA C", "ALTERNATIVA D",
-                       "ALTERNATIVA E", "ALTERNATIVA CORRETA")
+                       "ALTERNATIVA E", "ALTERNATIVA CORRETA", "EXPLICAÇÃO")
 
 treeview.column("#0", width=0, minwidth=0)
 treeview.column("ID", width=10, minwidth=10)
@@ -159,6 +163,7 @@ treeview.heading("ALTERNATIVA C", text="ALTERNATIVA C")
 treeview.heading("ALTERNATIVA D", text="ALTERNATIVA D")
 treeview.heading("ALTERNATIVA E", text="ALTERNATIVA E")
 treeview.heading("ALTERNATIVA CORRETA", text="ALTERNATIVA CORRETA")
+treeview.heading("EXPLICAÇÃO", text="EXPLICAÇÃO")
 
 tree_frame.grid_rowconfigure(0, weight=1)
 tree_frame.grid_columnconfigure(0, weight=1)
@@ -176,7 +181,7 @@ treeview.grid(row=0, column=0, sticky="nsew")
 pesquisar_frame = tk.Frame(root)
 pesquisar_frame.pack(fill=tk.X, padx=2)
 
-label_pesquisar = tk.Label(pesquisar_frame, text="Pesquisar: ", anchor=tk.W)
+label_pesquisar = tk.Label(pesquisar_frame, text="Pesquisar:", anchor=tk.W)
 label_pesquisar.pack(side=tk.LEFT)
 
 entry_pesquisar = tk.Entry(pesquisar_frame)

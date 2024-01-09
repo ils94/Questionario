@@ -5,14 +5,41 @@ import base64
 import io
 import dbAcoes
 import variaveisGlobais
+import checkBase64
+import textwrap
 
 correta = ""
 acertos = 0
 erros = 0
+dados = []
+
+
+def text_wrap(text):
+    max_characters_per_line = 200
+
+    wrapped = textwrap.fill(text, width=max_characters_per_line)
+
+    return wrapped
+
+
+def on_mouse_wheel(event):
+    canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
+
+def on_canvas_mousewheel(event):
+    on_mouse_wheel(event)
+
+
+def on_configure(event):
+    canvas.configure(scrollregion=canvas.bbox("all"))
+
+
+def on_canvas_configure(event):
+    canvas.itemconfig(canvas_id, width=event.width)
 
 
 def conferir_resposta():
-    global correta, acertos, erros
+    global correta, acertos, erros, dados
 
     user_choice = var.get()
 
@@ -63,27 +90,45 @@ def conferir_resposta():
     for button in [check_button1, check_button2, check_button3, check_button4, check_button5]:
         button.config(state="disabled")
 
+    if checkBase64.is_valid_image(dados[9]):
+        label_imagem_explicacao.pack(fill=tk.BOTH)
+        convert_and_display(dados[9], label_imagem_explicacao)
+    else:
+        explicacao_text.config(state="normal")
+        explicacao_text.pack(fill=tk.BOTH)
+        explicacao_text.delete("1.0", tk.END)
+        explicacao_text.insert(tk.END, str(dados[9]))
+        explicacao_text.config(state="disabled")
+
 
 def carregar_materia():
     variaveisGlobais.dbNAME = filedialog.askopenfilename(defaultextension=".db", filetypes=[("DB files", "*.db")])
 
-    proxima_questao_button.config(state="normal")
+    carregar_questao(None)
+
+    canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
 
-def carregar_questao():
-    global correta
+def carregar_questao(event):
+    global correta, dados
+
+    explicacao_text.forget()
+    label_imagem_explicacao.forget()
 
     dados = dbAcoes.selecionar_questao()
 
-    label_enunciado.config(text=dados[1])
+    label_enunciado.config(text=text_wrap(dados[1]))
 
-    convert_and_display(dados[2])
+    if checkBase64.is_valid_image(dados[2]):
+        convert_and_display(dados[2], label_imagem)
+    else:
+        convert_and_display("", label_imagem)
 
-    check_button1.config(text=dados[3])
-    check_button2.config(text=dados[4])
-    check_button3.config(text=dados[5])
-    check_button4.config(text=dados[6])
-    check_button5.config(text=dados[7])
+    check_button1.config(text="A    " + text_wrap(dados[3]))
+    check_button2.config(text="B    " + text_wrap(dados[4]))
+    check_button3.config(text="C    " + text_wrap(dados[5]))
+    check_button4.config(text="D    " + text_wrap(dados[6]))
+    check_button5.config(text="E    " + text_wrap(dados[7]))
 
     correta = dados[8]
 
@@ -92,30 +137,30 @@ def carregar_questao():
 
     var.set(None)
 
-    proxima_questao_button.config(text="Próxima Questão")
 
-
-def convert_and_display(string):
+def convert_and_display(string, label):
     base64_string = string
 
     if base64_string:
         image_data = base64.b64decode(base64_string)
 
         image = Image.open(io.BytesIO(image_data))
-        resized_image = image.resize((200, 200))
+        resized_image = image.resize((300, 300))
 
         resized_image = ImageTk.PhotoImage(resized_image)
 
-        label_imagem.config(image=resized_image)
-        label_imagem.image = resized_image
+        label.config(image=resized_image)
+        label.image = resized_image
     else:
-        label_imagem.config(image="")
+        label.config(image="")
 
 
 root = tk.Tk()
 root.state("zoomed")
 root.minsize(800, 600)
 root.title("PyQuestionario")
+root.bind("<space>", carregar_questao)
+root.bind_all("<MouseWheel>", on_canvas_mousewheel)
 
 menu_bar = tk.Menu(root)
 root.config(menu=menu_bar)
@@ -127,12 +172,15 @@ menu_button.add_command(label="Carregar Materia", command=carregar_materia)
 
 fonte = ("Arial", 14)
 
-image_path = "gato.jpg"
-image = Image.open(image_path)
-image = image.resize((200, 200))
-photo = ImageTk.PhotoImage(image)
+canvas = tk.Canvas(root)
+canvas.bind('<Configure>', on_canvas_configure)
 
-frame_score = tk.Frame(root)
+frame_canvas = tk.Frame(canvas)
+canvas_id = canvas.create_window((0, 0), window=frame_canvas, anchor="w")
+
+frame_canvas.bind("<Configure>", on_configure)
+
+frame_score = tk.Frame(frame_canvas)
 frame_score.pack(fill=tk.X, padx=5, pady=1)
 
 label_incorretas = tk.Label(frame_score, text="Incorretas: 0", anchor=tk.W, font=fonte, fg="red")
@@ -141,19 +189,19 @@ label_incorretas.pack(side=tk.RIGHT, padx=5, pady=5)
 label_corretas = tk.Label(frame_score, text="Corretas: 0", anchor=tk.W, font=fonte, fg="green")
 label_corretas.pack(side=tk.RIGHT, padx=5, pady=5)
 
-frame_enunciado = tk.Frame(root)
+frame_enunciado = tk.Frame(frame_canvas)
 frame_enunciado.pack(fill=tk.X, padx=5, pady=5)
 
-label_enunciado = tk.Label(frame_enunciado, text="...", anchor=tk.W, font=fonte)
+label_enunciado = tk.Label(frame_enunciado, anchor=tk.W, font=fonte, justify=tk.LEFT)
 label_enunciado.pack(side=tk.LEFT)
 
-frame_imagem = tk.Frame(root)
+frame_imagem = tk.Frame(frame_canvas)
 frame_imagem.pack(fill=tk.X, padx=5, pady=5)
 
-label_imagem = tk.Label(root, anchor=tk.W, font=fonte)
+label_imagem = tk.Label(frame_canvas)
 label_imagem.pack(padx=5, pady=10)
 
-frame_alternativas = tk.Frame(root)
+frame_alternativas = tk.Frame(frame_canvas)
 frame_alternativas.pack(fill=tk.X, padx=5, pady=10)
 
 frame_a = tk.Frame(frame_alternativas)
@@ -195,13 +243,11 @@ check_button5 = tk.Checkbutton(frame_e, text="...", variable=var, onvalue="E", f
                                command=conferir_resposta)
 check_button5.pack(side=tk.LEFT)
 
-frame_imagem = tk.Frame(root)
-frame_imagem.pack(side=tk.BOTTOM, fill=tk.X, padx=5, pady=5)
+frame_explicacao = tk.Frame(frame_canvas)
+frame_explicacao.pack(fill=tk.X, padx=5, pady=5)
 
-proxima_questao_button = tk.Button(frame_imagem, text="Iniciar", command=carregar_questao, font=fonte)
-proxima_questao_button.pack(side=tk.LEFT)
-
-proxima_questao_button.config(state="disabled")
+explicacao_text = tk.Text(frame_explicacao)
+label_imagem_explicacao = tk.Label(frame_explicacao)
 
 for button in [check_button1, check_button2, check_button3, check_button4, check_button5]:
     button.config(state="disabled")
