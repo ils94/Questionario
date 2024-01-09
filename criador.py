@@ -38,20 +38,17 @@ def pesquisar(event):
 
 
 def inserir():
-    if entry_1.get() == "" or entry_3.get() == "" or entry_4.get() == "" or entry_5.get() == "" or entry_6.get() == "" or entry_7.get() == "" or entry_8.get() == "":
-        messagebox.showerror("Erro", "É necessario o Enunciado, as alternativas e a alternativa correta.")
-    else:
-        dados = (cleanText.clean_string(entry_1.get()),
-                 cleanText.clean_string(entry_2.get()),
-                 cleanText.clean_string(entry_3.get()),
-                 cleanText.clean_string(entry_4.get()),
-                 cleanText.clean_string(entry_5.get()),
-                 cleanText.clean_string(entry_6.get()),
-                 cleanText.clean_string(entry_7.get()),
-                 cleanText.clean_string(entry_8.get()),
-                 entry_9.get("1.0", tk.END))
+    dados = (cleanText.clean_string(entry_1.get()),
+             cleanText.clean_string(entry_2.get()),
+             cleanText.clean_string(entry_3.get()),
+             cleanText.clean_string(entry_4.get()),
+             cleanText.clean_string(entry_5.get()),
+             cleanText.clean_string(entry_6.get()),
+             cleanText.clean_string(entry_7.get()),
+             cleanText.clean_string(entry_8.get()),
+             entry_9.get("1.0", tk.END))
 
-        dbAcoes.inserir(dados)
+    dbAcoes.inserir(dados)
 
 
 def alterar():

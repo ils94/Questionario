@@ -10,10 +10,10 @@ def convert_and_display(string, label):
 
     image = Image.open(io.BytesIO(image_data))
 
-    resized_image = ImageTk.PhotoImage(image)
+    decoded_image = ImageTk.PhotoImage(image)
 
-    label.config(image=resized_image)
-    label.image = resized_image
+    label.config(image=decoded_image)
+    label.image = decoded_image
 
 
 def mostrar(imagem):

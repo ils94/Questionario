@@ -12,10 +12,6 @@ incorretas = 0
 dados = []
 
 
-def mostrar_imagem():
-    mostrarImagem.mostrar(dados[2])
-
-
 def text_wrap(text):
     max_characters_per_line = 150
 
@@ -76,11 +72,15 @@ def conferir_resposta():
     for button in [check_button1, check_button2, check_button3, check_button4, check_button5]:
         button.config(state="disabled")
 
-        explicacao_text.config(state="normal")
-        explicacao_text.pack(fill=tk.BOTH, expand=True)
-        explicacao_text.delete("1.0", tk.END)
-        explicacao_text.insert(tk.END, str(dados[9]))
-        explicacao_text.config(state="disabled")
+        if checkBase64.is_valid_image(dados[9]):
+            button_explicacao_imagem.pack()
+            button_explicacao_imagem.configure(command=lambda: mostrarImagem.mostrar(dados[2]))
+        else:
+            explicacao_text.config(state="normal")
+            explicacao_text.pack(fill=tk.BOTH, expand=True)
+            explicacao_text.delete("1.0", tk.END)
+            explicacao_text.insert(tk.END, str(dados[9]))
+            explicacao_text.config(state="disabled")
 
 
 def carregar_materia():
@@ -95,6 +95,7 @@ def carregar_questao(event):
     global correta, dados
 
     explicacao_text.forget()
+    button_explicacao_imagem.forget()
 
     dados = dbAcoes.selecionar_questao()
 
@@ -102,6 +103,7 @@ def carregar_questao(event):
 
     if checkBase64.is_valid_image(dados[2]):
         button_imagem.pack()
+        button_imagem.configure(command=lambda: mostrarImagem.mostrar(dados[2]))
     else:
         button_imagem.forget()
 
@@ -185,7 +187,7 @@ label_enunciado.pack(side=tk.LEFT)
 frame_imagem = tk.Frame(frame_ui)
 frame_imagem.pack(fill=tk.X)
 
-button_imagem = tk.Button(frame_imagem, text="Mostrar Imagem", command=mostrar_imagem)
+button_imagem = tk.Button(frame_imagem, text="Mostrar Imagem", width=20, font=fonte)
 button_imagem.pack()
 
 frame_alternativas = tk.Frame(frame_ui)
@@ -234,5 +236,6 @@ frame_explicacao = tk.Frame(frame_ui)
 frame_explicacao.pack(fill=tk.X, padx=5, pady=5)
 
 explicacao_text = tk.Text(frame_explicacao)
+button_explicacao_imagem = tk.Button(frame_explicacao, text="Imagem da Explicação", width=20, font=fonte)
 
 root.mainloop()
