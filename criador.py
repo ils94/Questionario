@@ -23,9 +23,6 @@ def verificar_questao_existente(enunciado):
                       entry_10.get("1.0", tk.END)]:
             filtro = filtro + entry.strip()
 
-        print(resultado)
-        print(filtro)
-
         if resultado == filtro:
             messagebox.showerror("Erro", "Questão já existe.")
             return True
@@ -130,12 +127,21 @@ def deletar():
 
 
 def carregar_db():
-    variaveisGlobais.dbNAME = filedialog.askopenfilename(defaultextension=".db", filetypes=[("DB files", "*.db")])
+    db = filedialog.askopenfilename(defaultextension=".db", filetypes=[("DB files", "*.db")])
+
+    if db:
+        filename = os.path.basename(db)
+
+        filename = filename.replace(".db", "")
+
+        root.title(f"Criador - {filename}")
+
+        variaveisGlobais.dbNAME = db
 
 
 root = tk.Tk()
 root.state("zoomed")
-root.title("Criador ")
+root.title("Criador")
 if os.path.isfile("criadoricon.ico"):
     root.iconbitmap("criadoricon.ico")
 
