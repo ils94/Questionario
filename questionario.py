@@ -101,7 +101,7 @@ def carregar_materia():
 
         filename = filename.replace(".db", "")
 
-        root.title(f"Questonario - {filename}")
+        root.title(f"Questionario - {filename}")
 
         variaveisGlobais.dbNAME = db
 
