@@ -7,6 +7,24 @@ import cleanText
 import convertToBase64
 
 
+def verificar_questao_existente(enunciado):
+    resultado = dbAcoes.verificar_completo(enunciado)
+
+    filtro = ""
+
+    if resultado:
+        for entry in [entry_1.get(), entry_2.get("1.0", tk.END), entry_3.get(), entry_4.get(), entry_5.get(),
+                      entry_6.get(), entry_7.get(), entry_8.get(), entry_9.get("1.0", tk.END),
+                      entry_10.get("1.0", tk.END)]:
+            filtro = filtro + entry.replace(" ", "").replace("\n", "").strip()
+
+        if resultado == filtro:
+            messagebox.showerror("Erro", "Questão já existe.")
+            return True
+        else:
+            return False
+
+
 def converter_imagem(event, entry):
     arquivo = filedialog.askopenfilename()
 
@@ -48,35 +66,32 @@ def pesquisar(event):
 
 
 def inserir():
-    enunciado = cleanText.clean_string(entry_1.get())
+    enunciado = cleanText.clean_string_line_breakers(entry_1.get())
 
-    if dbAcoes.verificar(enunciado):
-        messagebox.showerror("Erro", "Questão já existe.")
-        return
-    else:
+    if not verificar_questao_existente(enunciado):
         dados = (enunciado,
-                 cleanText.clean_string(entry_2.get("1.0", tk.END)),
-                 cleanText.clean_string(entry_3.get()),
-                 cleanText.clean_string(entry_4.get()),
-                 cleanText.clean_string(entry_5.get()),
-                 cleanText.clean_string(entry_6.get()),
-                 cleanText.clean_string(entry_7.get()),
-                 cleanText.clean_string(entry_8.get()),
-                 entry_9.get("1.0", tk.END),
-                 cleanText.clean_string(entry_10.get("1.0", tk.END)))
+                 cleanText.clean_string_spaces(entry_2.get("1.0", "end-1c")),
+                 cleanText.clean_string_spaces(entry_3.get()),
+                 cleanText.clean_string_spaces(entry_4.get()),
+                 cleanText.clean_string_spaces(entry_5.get()),
+                 cleanText.clean_string_spaces(entry_6.get()),
+                 cleanText.clean_string_spaces(entry_7.get()),
+                 cleanText.clean_string_spaces(entry_8.get()),
+                 cleanText.clean_string_line_breakers(entry_9.get("1.0", "end-1c")),
+                 cleanText.clean_string_spaces(entry_10.get("1.0", "end-1c")))
 
         dbAcoes.inserir(dados)
 
-    entry_1.delete(0, tk.END)
-    entry_2.delete("1.0", tk.END)
-    entry_3.delete(0, tk.END)
-    entry_4.delete(0, tk.END)
-    entry_5.delete(0, tk.END)
-    entry_6.delete(0, tk.END)
-    entry_7.delete(0, tk.END)
-    entry_8.delete(0, tk.END)
-    entry_9.delete("1.0", tk.END)
-    entry_10.delete("1.0", tk.END)
+        entry_1.delete(0, tk.END)
+        entry_2.delete("1.0", tk.END)
+        entry_3.delete(0, tk.END)
+        entry_4.delete(0, tk.END)
+        entry_5.delete(0, tk.END)
+        entry_6.delete(0, tk.END)
+        entry_7.delete(0, tk.END)
+        entry_8.delete(0, tk.END)
+        entry_9.delete("1.0", tk.END)
+        entry_10.delete("1.0", tk.END)
 
 
 def alterar():
@@ -84,35 +99,22 @@ def alterar():
         messagebox.showerror("Erro", "Selecione um item para alteração.")
         return
 
-    enunciado = cleanText.clean_string(entry_1.get())
+    enunciado = cleanText.clean_string_spaces(entry_1.get())
 
-    resultado = dbAcoes.verificar_completo(enunciado)
+    if not verificar_questao_existente(enunciado):
+        dados = (enunciado,
+                 cleanText.clean_string_spaces(entry_2.get("1.0", "end-1c")),
+                 cleanText.clean_string_spaces(entry_3.get()),
+                 cleanText.clean_string_spaces(entry_4.get()),
+                 cleanText.clean_string_spaces(entry_5.get()),
+                 cleanText.clean_string_spaces(entry_6.get()),
+                 cleanText.clean_string_spaces(entry_7.get()),
+                 cleanText.clean_string_spaces(entry_8.get()),
+                 cleanText.clean_string_line_breakers(entry_9.get("1.0", "end-1c")),
+                 cleanText.clean_string_spaces(entry_10.get("1.0", "end-1c")),
+                 variaveisGlobais.ID)
 
-    filtro = ""
-
-    if resultado:
-        for entry in [entry_1.get(), entry_2.get("1.0", tk.END), entry_3.get(), entry_4.get(), entry_5.get(),
-                      entry_6.get(), entry_7.get(), entry_8.get(), entry_9.get("1.0", tk.END),
-                      entry_10.get("1.0", tk.END)]:
-            filtro = filtro + entry.replace(" ", "").replace("\n", "").strip()
-
-        if resultado == filtro:
-            messagebox.showerror("Erro", "Questão já existe.")
-            return
-
-    dados = (enunciado,
-             cleanText.clean_string(entry_2.get("1.0", tk.END)),
-             cleanText.clean_string(entry_3.get()),
-             cleanText.clean_string(entry_4.get()),
-             cleanText.clean_string(entry_5.get()),
-             cleanText.clean_string(entry_6.get()),
-             cleanText.clean_string(entry_7.get()),
-             cleanText.clean_string(entry_8.get()),
-             entry_9.get("1.0", tk.END),
-             cleanText.clean_string(entry_10.get("1.0", tk.END)),
-             variaveisGlobais.ID)
-
-    dbAcoes.alterar(dados)
+        dbAcoes.alterar(dados)
 
 
 def deletar():
