@@ -5,6 +5,11 @@ import dbAcoes
 import variaveisGlobais
 import cleanText
 import convertToBase64
+import os
+
+
+def abrir_questionario():
+    os.startfile("questionario.exe")
 
 
 def verificar_questao_existente(enunciado):
@@ -131,6 +136,8 @@ def carregar_db():
 root = tk.Tk()
 root.state("zoomed")
 root.title("Criador ")
+if os.path.isfile("criadoricon.ico"):
+    root.iconbitmap("criadoricon.ico")
 
 menu_bar = tk.Menu(root)
 root.config(menu=menu_bar)
@@ -140,6 +147,8 @@ menu_bar.add_cascade(label="Menu", menu=menu_button)
 
 menu_button.add_command(label="Criar DB", command=criarDB.criar_db)
 menu_button.add_command(label="Carregar DB", command=carregar_db)
+menu_button.add_separator()
+menu_button.add_command(label="Abrir Questionario", command=abrir_questionario)
 
 width = 20
 

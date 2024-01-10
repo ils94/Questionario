@@ -14,6 +14,10 @@ dados = []
 respondida = True
 
 
+def abrir_criador():
+    os.startfile("criador.exe")
+
+
 def text_wrap(text):
     max_characters_per_line = 150
 
@@ -171,9 +175,10 @@ def carregar_questao(event):
 
 root = tk.Tk()
 root.state("zoomed")
-root.minsize(800, 600)
 root.title("Questionario")
 root.bind("<space>", carregar_questao)
+if os.path.isfile("questionarioicon.ico"):
+    root.iconbitmap("questionarioicon.ico")
 
 menu_bar = tk.Menu(root)
 root.config(menu=menu_bar)
@@ -182,6 +187,8 @@ menu_button = tk.Menu(menu_bar, tearoff=0)
 menu_bar.add_cascade(label="Menu", menu=menu_button)
 
 menu_button.add_command(label="Carregar Materia", command=carregar_materia)
+menu_button.add_separator()
+menu_button.add_command(label="Abrir Criador", command=abrir_criador)
 
 fonte = ("Arial", 12, "bold")
 
