@@ -78,3 +78,40 @@ def procurar():
 
     for row in search_results:
         variaveisGlobais.treeview.insert('', 'end', values=row)
+
+
+def verificar(enunciado):
+    try:
+        conn = sqlite3.connect(variaveisGlobais.dbNAME)
+        cursor = conn.cursor()
+
+        cursor.execute(dbQueries.verificar, (enunciado,))
+        row = cursor.fetchone()
+
+        conn.close()
+
+        if row:
+            return True
+    except Exception as e:
+        messagebox.showerror("Error", str(e))
+
+
+def verificar_completo(enunciado):
+    try:
+        conn = sqlite3.connect(variaveisGlobais.dbNAME)
+        cursor = conn.cursor()
+
+        cursor.execute(dbQueries.verificar, (enunciado,))
+        row = cursor.fetchone()
+
+        conn.close()
+
+        result = ""
+
+        if row:
+            for data in row[1:]:
+                result = result + str(data).replace(" ", "").replace("\n", "")
+
+        return result
+    except Exception as e:
+        messagebox.showerror("Error", str(e))

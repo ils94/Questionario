@@ -27,7 +27,7 @@ Alternativa_D = ?,
 Alternativa_E = ?,
 Alternativa_Correta = ?,
 Explicacao = ?,
-Imagem_Explicacao ?
+Imagem_Explicacao = ?
 WHERE ID = ?
 """
 
@@ -46,3 +46,5 @@ Explicacao = ?
 """
 
 select_query = f'SELECT * FROM QUESTOES ORDER BY RANDOM() LIMIT 1;'
+
+verificar = "SELECT * FROM QUESTOES WHERE Enunciado = ?"

@@ -7,14 +7,11 @@ import cleanText
 import convertToBase64
 
 
-def converter_imagem_1(event):
+def converter_imagem(event, entry):
     arquivo = filedialog.askopenfilename()
-    entry_2.insert(tk.END, arquivo)
 
-
-def converter_imagem_2(event):
-    arquivo = filedialog.askopenfilename()
-    entry_10.insert(tk.END, arquivo)
+    if arquivo:
+        entry.insert("1.0", convertToBase64.image_to_base64(arquivo))
 
 
 def on_click(event):
@@ -24,7 +21,7 @@ def on_click(event):
     variaveisGlobais.ID = values[0]
 
     entry_1.delete(0, tk.END)
-    entry_2.delete(0, tk.END)
+    entry_2.delete("1.0", tk.END)
     entry_3.delete(0, tk.END)
     entry_4.delete(0, tk.END)
     entry_5.delete(0, tk.END)
@@ -32,9 +29,10 @@ def on_click(event):
     entry_7.delete(0, tk.END)
     entry_8.delete(0, tk.END)
     entry_9.delete("1.0", tk.END)
+    entry_10.delete("1.0", tk.END)
 
     entry_1.insert(tk.END, values[1])
-    entry_2.insert(tk.END, values[2])
+    entry_2.insert("1.0", values[2])
     entry_3.insert(tk.END, values[3])
     entry_4.insert(tk.END, values[4])
     entry_5.insert(tk.END, values[5])
@@ -42,6 +40,7 @@ def on_click(event):
     entry_7.insert(tk.END, values[7])
     entry_8.insert(tk.END, values[8])
     entry_9.insert(tk.END, values[9])
+    entry_10.insert("1.0", values[10])
 
 
 def pesquisar(event):
@@ -49,29 +48,14 @@ def pesquisar(event):
 
 
 def inserir():
-    dados = (cleanText.clean_string(entry_1.get()),
-             convertToBase64.image_to_base64(entry_2.get()),
-             cleanText.clean_string(entry_3.get()),
-             cleanText.clean_string(entry_4.get()),
-             cleanText.clean_string(entry_5.get()),
-             cleanText.clean_string(entry_6.get()),
-             cleanText.clean_string(entry_7.get()),
-             cleanText.clean_string(entry_8.get()),
-             entry_9.get("1.0", tk.END),
-             convertToBase64.image_to_base64(entry_10.get()))
+    enunciado = cleanText.clean_string(entry_1.get())
 
-    dbAcoes.inserir(dados)
-
-
-def alterar():
-    if not variaveisGlobais.ID:
+    if dbAcoes.verificar(enunciado):
+        messagebox.showerror("Erro", "Questão já existe.")
         return
-
-    if entry_1.get() == "":
-        messagebox.showerror("Erro", "É necessario o Enunciado.")
     else:
-        dados = (cleanText.clean_string(entry_1.get()),
-                 convertToBase64.image_to_base64(entry_2.get()),
+        dados = (enunciado,
+                 cleanText.clean_string(entry_2.get("1.0", tk.END)),
                  cleanText.clean_string(entry_3.get()),
                  cleanText.clean_string(entry_4.get()),
                  cleanText.clean_string(entry_5.get()),
@@ -79,10 +63,56 @@ def alterar():
                  cleanText.clean_string(entry_7.get()),
                  cleanText.clean_string(entry_8.get()),
                  entry_9.get("1.0", tk.END),
-                 convertToBase64.image_to_base64(entry_10.get()),
-                 variaveisGlobais.ID)
+                 cleanText.clean_string(entry_10.get("1.0", tk.END)))
 
-        dbAcoes.alterar(dados)
+        dbAcoes.inserir(dados)
+
+    entry_1.delete(0, tk.END)
+    entry_2.delete("1.0", tk.END)
+    entry_3.delete(0, tk.END)
+    entry_4.delete(0, tk.END)
+    entry_5.delete(0, tk.END)
+    entry_6.delete(0, tk.END)
+    entry_7.delete(0, tk.END)
+    entry_8.delete(0, tk.END)
+    entry_9.delete("1.0", tk.END)
+    entry_10.delete("1.0", tk.END)
+
+
+def alterar():
+    if not variaveisGlobais.ID:
+        messagebox.showerror("Erro", "Selecione um item para alteração.")
+        return
+
+    enunciado = cleanText.clean_string(entry_1.get())
+
+    resultado = dbAcoes.verificar_completo(enunciado)
+
+    filtro = ""
+
+    if resultado:
+        for entry in [entry_1.get(), entry_2.get("1.0", tk.END), entry_3.get(), entry_4.get(), entry_5.get(),
+                      entry_6.get(), entry_7.get(), entry_8.get(), entry_9.get("1.0", tk.END),
+                      entry_10.get("1.0", tk.END)]:
+            filtro = filtro + entry.replace(" ", "").replace("\n", "").strip()
+
+        if resultado == filtro:
+            messagebox.showerror("Erro", "Questão já existe.")
+            return
+
+    dados = (enunciado,
+             cleanText.clean_string(entry_2.get("1.0", tk.END)),
+             cleanText.clean_string(entry_3.get()),
+             cleanText.clean_string(entry_4.get()),
+             cleanText.clean_string(entry_5.get()),
+             cleanText.clean_string(entry_6.get()),
+             cleanText.clean_string(entry_7.get()),
+             cleanText.clean_string(entry_8.get()),
+             entry_9.get("1.0", tk.END),
+             cleanText.clean_string(entry_10.get("1.0", tk.END)),
+             variaveisGlobais.ID)
+
+    dbAcoes.alterar(dados)
 
 
 def deletar():
@@ -95,7 +125,6 @@ def carregar_db():
 
 root = tk.Tk()
 root.state("zoomed")
-root.minsize(800, 600)
 root.title("Criador ")
 
 menu_bar = tk.Menu(root)
@@ -127,9 +156,9 @@ frame_1_b.pack(fill=tk.X)
 label_2 = tk.Label(frame_1_b, text="Imagem do Enunciado:", width=width, anchor=tk.W)
 label_2.pack(side=tk.LEFT)
 
-entry_2 = tk.Entry(frame_1_b)
+entry_2 = tk.Text(frame_1_b, height=1)
 entry_2.pack(side=tk.LEFT, fill=tk.X, expand=True)
-entry_2.bind("<Double-Button-1>", lambda event, entry=entry_2: converter_imagem_1(entry))
+entry_2.bind("<Double-Button-1>", lambda event, entry=entry_2: converter_imagem(None, entry))
 
 frame_1_c = tk.Frame(frame_1)
 frame_1_c.pack(fill=tk.X)
@@ -203,9 +232,9 @@ frame_1_i_b.pack(fill=tk.X, expand=True)
 label_10 = tk.Label(frame_1_i_b, text="Imagem da Explicação:", width=width, anchor=tk.W)
 label_10.pack(side=tk.LEFT)
 
-entry_10 = tk.Entry(frame_1_i_b)
+entry_10 = tk.Text(frame_1_i_b, height=1)
 entry_10.pack(fill=tk.BOTH, expand=True, pady=5)
-entry_10.bind("<Double-Button-1>", lambda event, entry=entry_10: converter_imagem_2(entry))
+entry_10.bind("<Double-Button-1>", lambda event, entry=entry_10: converter_imagem(None, entry))
 
 frame_2 = tk.Frame(frame_1)
 frame_2.pack(fill=tk.X, pady=5)
@@ -224,8 +253,9 @@ tree_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
 treeview = ttk.Treeview(tree_frame, show="headings", selectmode="browse")
 
-treeview['columns'] = ("ID", "ENUNCIADO", "IMAGEM DO ENUNCIADO", "ALTERNATIVA A", "ALTERNATIVA B", "ALTERNATIVA C", "ALTERNATIVA D",
-                       "ALTERNATIVA E", "ALTERNATIVA CORRETA", "EXPLICAÇÃO", "IMAGEM DA EXPLICAÇÃO")
+treeview['columns'] = (
+    "ID", "ENUNCIADO", "IMAGEM DO ENUNCIADO", "ALTERNATIVA A", "ALTERNATIVA B", "ALTERNATIVA C", "ALTERNATIVA D",
+    "ALTERNATIVA E", "ALTERNATIVA CORRETA", "EXPLICAÇÃO", "IMAGEM DA EXPLICAÇÃO")
 
 treeview.column("#0", width=0, minwidth=0)
 treeview.column("ID", width=10, minwidth=10)
