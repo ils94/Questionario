@@ -4,6 +4,17 @@ import criarDB
 import dbAcoes
 import variaveisGlobais
 import cleanText
+import convertToBase64
+
+
+def converter_imagem_1(event):
+    arquivo = filedialog.askopenfilename()
+    entry_2.insert(tk.END, arquivo)
+
+
+def converter_imagem_2(event):
+    arquivo = filedialog.askopenfilename()
+    entry_10.insert(tk.END, arquivo)
 
 
 def on_click(event):
@@ -39,14 +50,15 @@ def pesquisar(event):
 
 def inserir():
     dados = (cleanText.clean_string(entry_1.get()),
-             cleanText.clean_string(entry_2.get()),
+             convertToBase64.image_to_base64(entry_2.get()),
              cleanText.clean_string(entry_3.get()),
              cleanText.clean_string(entry_4.get()),
              cleanText.clean_string(entry_5.get()),
              cleanText.clean_string(entry_6.get()),
              cleanText.clean_string(entry_7.get()),
              cleanText.clean_string(entry_8.get()),
-             entry_9.get("1.0", tk.END))
+             entry_9.get("1.0", tk.END),
+             convertToBase64.image_to_base64(entry_10.get()))
 
     dbAcoes.inserir(dados)
 
@@ -59,7 +71,7 @@ def alterar():
         messagebox.showerror("Erro", "É necessario o Enunciado.")
     else:
         dados = (cleanText.clean_string(entry_1.get()),
-                 cleanText.clean_string(entry_2.get()),
+                 convertToBase64.image_to_base64(entry_2.get()),
                  cleanText.clean_string(entry_3.get()),
                  cleanText.clean_string(entry_4.get()),
                  cleanText.clean_string(entry_5.get()),
@@ -67,6 +79,7 @@ def alterar():
                  cleanText.clean_string(entry_7.get()),
                  cleanText.clean_string(entry_8.get()),
                  entry_9.get("1.0", tk.END),
+                 convertToBase64.image_to_base64(entry_10.get()),
                  variaveisGlobais.ID)
 
         dbAcoes.alterar(dados)
@@ -94,7 +107,7 @@ menu_bar.add_cascade(label="Menu", menu=menu_button)
 menu_button.add_command(label="Criar DB", command=criarDB.criar_db)
 menu_button.add_command(label="Carregar DB", command=carregar_db)
 
-width = 15
+width = 20
 
 frame_1 = tk.Frame(root)
 frame_1.pack(fill=tk.X, padx=5, pady=5)
@@ -111,11 +124,12 @@ entry_1.pack(side=tk.LEFT, fill=tk.X, expand=True)
 frame_1_b = tk.Frame(frame_1)
 frame_1_b.pack(fill=tk.X)
 
-label_2 = tk.Label(frame_1_b, text="Imagem:", width=width, anchor=tk.W)
+label_2 = tk.Label(frame_1_b, text="Imagem do Enunciado:", width=width, anchor=tk.W)
 label_2.pack(side=tk.LEFT)
 
 entry_2 = tk.Entry(frame_1_b)
 entry_2.pack(side=tk.LEFT, fill=tk.X, expand=True)
+entry_2.bind("<Double-Button-1>", lambda event, entry=entry_2: converter_imagem_1(entry))
 
 frame_1_c = tk.Frame(frame_1)
 frame_1_c.pack(fill=tk.X)
@@ -183,6 +197,16 @@ label_9.pack(side=tk.LEFT)
 entry_9 = tk.Text(frame_1_i, height=10)
 entry_9.pack(fill=tk.BOTH, expand=True)
 
+frame_1_i_b = tk.Frame(frame_1_i)
+frame_1_i_b.pack(fill=tk.X, expand=True)
+
+label_10 = tk.Label(frame_1_i_b, text="Imagem da Explicação:", width=width, anchor=tk.W)
+label_10.pack(side=tk.LEFT)
+
+entry_10 = tk.Entry(frame_1_i_b)
+entry_10.pack(fill=tk.BOTH, expand=True, pady=5)
+entry_10.bind("<Double-Button-1>", lambda event, entry=entry_10: converter_imagem_2(entry))
+
 frame_2 = tk.Frame(frame_1)
 frame_2.pack(fill=tk.X, pady=5)
 
@@ -200,8 +224,8 @@ tree_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
 treeview = ttk.Treeview(tree_frame, show="headings", selectmode="browse")
 
-treeview['columns'] = ("ID", "ENUNCIADO", "IMAGEM", "ALTERNATIVA A", "ALTERNATIVA B", "ALTERNATIVA C", "ALTERNATIVA D",
-                       "ALTERNATIVA E", "ALTERNATIVA CORRETA", "EXPLICAÇÃO")
+treeview['columns'] = ("ID", "ENUNCIADO", "IMAGEM DO ENUNCIADO", "ALTERNATIVA A", "ALTERNATIVA B", "ALTERNATIVA C", "ALTERNATIVA D",
+                       "ALTERNATIVA E", "ALTERNATIVA CORRETA", "EXPLICAÇÃO", "IMAGEM DA EXPLICAÇÃO")
 
 treeview.column("#0", width=0, minwidth=0)
 treeview.column("ID", width=10, minwidth=10)
@@ -209,7 +233,7 @@ treeview.column("ID", width=10, minwidth=10)
 treeview.heading("#0", text="")
 treeview.heading("ID", text="ID")
 treeview.heading("ENUNCIADO", text="ENUNCIADO")
-treeview.heading("IMAGEM", text="IMAGEM")
+treeview.heading("IMAGEM DO ENUNCIADO", text="IMAGEM DO ENUNCIADO")
 treeview.heading("ALTERNATIVA A", text="ALTERNATIVA A")
 treeview.heading("ALTERNATIVA B", text="ALTERNATIVA B")
 treeview.heading("ALTERNATIVA C", text="ALTERNATIVA C")
@@ -217,6 +241,7 @@ treeview.heading("ALTERNATIVA D", text="ALTERNATIVA D")
 treeview.heading("ALTERNATIVA E", text="ALTERNATIVA E")
 treeview.heading("ALTERNATIVA CORRETA", text="ALTERNATIVA CORRETA")
 treeview.heading("EXPLICAÇÃO", text="EXPLICAÇÃO")
+treeview.heading("IMAGEM DA EXPLICAÇÃO", text="IMAGEM DA EXPLICAÇÃO")
 
 tree_frame.grid_rowconfigure(0, weight=1)
 tree_frame.grid_columnconfigure(0, weight=1)

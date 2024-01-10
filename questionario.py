@@ -5,6 +5,7 @@ import variaveisGlobais
 import checkBase64
 import textwrap
 import mostrarImagem
+import os
 
 correta = ""
 corretas = 0
@@ -52,7 +53,7 @@ def conferir_resposta():
 
         corretas = corretas + 1
 
-        label_corretas.config(text=f"CORRETAS: {corretas}")
+        label_corretas.config(text=f"{corretas} CORRETAS")
     else:
         if user_choice == "A":
             check_button1.configure(disabledforeground="red")
@@ -67,28 +68,45 @@ def conferir_resposta():
 
         incorretas = incorretas + 1
 
-        label_incorretas.config(text=f"INCORRETAS: {incorretas}")
+        label_incorretas.config(text=f"INCORRETAS {incorretas}")
 
     for button in [check_button1, check_button2, check_button3, check_button4, check_button5]:
         button.config(state="disabled")
 
-        if checkBase64.is_valid_image(dados[9]):
-            button_explicacao_imagem.pack()
-            button_explicacao_imagem.configure(command=lambda: mostrarImagem.mostrar(dados[2]))
-        else:
-            explicacao_text.config(state="normal")
-            explicacao_text.pack(fill=tk.BOTH, expand=True)
-            explicacao_text.delete("1.0", tk.END)
-            explicacao_text.insert(tk.END, str(dados[9]))
-            explicacao_text.config(state="disabled")
+        explicacao_text.config(state="normal")
+        explicacao_text.pack(fill=tk.BOTH, expand=True)
+        explicacao_text.delete("1.0", tk.END)
+        explicacao_text.insert(tk.END, str(dados[9]))
+        explicacao_text.config(state="disabled")
+
+        if checkBase64.is_valid_image(dados[10]):
+            button_explicacao_imagem.pack(side=tk.LEFT, pady=5)
+            button_explicacao_imagem.configure(command=lambda: mostrarImagem.mostrar(dados[10]))
 
 
 def carregar_materia():
-    variaveisGlobais.dbNAME = filedialog.askopenfilename(defaultextension=".db", filetypes=[("DB files", "*.db")])
+    global corretas, incorretas
 
-    carregar_questao(None)
+    db = filedialog.askopenfilename(defaultextension=".db", filetypes=[("DB files", "*.db")])
 
-    frame_ui.pack(fill=tk.BOTH, expand=True)
+    if db:
+        filename = os.path.basename(db)
+
+        filename = filename.replace(".db", "")
+
+        root.title(f"Questonario - Matéria: {filename}")
+
+        variaveisGlobais.dbNAME = db
+
+        corretas = 0
+        incorretas = 0
+
+        label_corretas.configure(text="0 CORRETAS")
+        label_incorretas.configure(text="INCORRETAS 0")
+
+        carregar_questao(None)
+
+        frame_ui.pack(fill=tk.BOTH, expand=True)
 
 
 def carregar_questao(event):
@@ -102,7 +120,7 @@ def carregar_questao(event):
     label_enunciado.config(text=text_wrap(dados[1]))
 
     if checkBase64.is_valid_image(dados[2]):
-        button_imagem.pack()
+        button_imagem.pack(side=tk.LEFT, padx=5, pady=5)
         button_imagem.configure(command=lambda: mostrarImagem.mostrar(dados[2]))
     else:
         button_imagem.forget()
@@ -148,7 +166,7 @@ def carregar_questao(event):
 root = tk.Tk()
 root.state("zoomed")
 root.minsize(800, 600)
-root.title("PyQuestionario")
+root.title("Questionario")
 root.bind("<space>", carregar_questao)
 
 menu_bar = tk.Menu(root)
@@ -164,19 +182,25 @@ fonte = ("Arial", 12, "bold")
 frame_ui = tk.Frame(root)
 
 frame_score = tk.Frame(frame_ui)
-frame_score.pack(fill=tk.X)
+frame_score.pack(padx=5, pady=5)
 
 frame_score_1 = tk.Frame(frame_score)
-frame_score_1.pack(fill=tk.X)
+frame_score_1.grid(row=0, column=0)
 
-label_incorretas = tk.Label(frame_score_1, text="INCORRETAS: 0", anchor=tk.W, font=fonte, fg="red")
-label_incorretas.pack(side=tk.LEFT)
+label_incorretas = tk.Label(frame_score_1, font=fonte, fg="red")
+label_incorretas.pack()
 
 frame_score_2 = tk.Frame(frame_score)
-frame_score_2.pack(fill=tk.X)
+frame_score_2.grid(row=0, column=1)
 
-label_corretas = tk.Label(frame_score_2, text="CORRETAS: 0", anchor=tk.W, font=fonte, fg="green")
-label_corretas.pack(side=tk.LEFT)
+label_separador = tk.Label(frame_score_2, text="|", font=fonte, fg="black")
+label_separador.pack()
+
+frame_score_3 = tk.Frame(frame_score)
+frame_score_3.grid(row=0, column=2)
+
+label_corretas = tk.Label(frame_score_3, font=fonte, fg="green")
+label_corretas.pack()
 
 frame_enunciado = tk.Frame(frame_ui)
 frame_enunciado.pack(fill=tk.X, padx=5, pady=10)
@@ -187,8 +211,7 @@ label_enunciado.pack(side=tk.LEFT)
 frame_imagem = tk.Frame(frame_ui)
 frame_imagem.pack(fill=tk.X)
 
-button_imagem = tk.Button(frame_imagem, text="Mostrar Imagem", width=20, font=fonte)
-button_imagem.pack()
+button_imagem = tk.Button(frame_imagem, text="Imagem", font=fonte)
 
 frame_alternativas = tk.Frame(frame_ui)
 frame_alternativas.pack(fill=tk.X, padx=5, pady=10)
@@ -235,7 +258,7 @@ check_button5.pack(side=tk.LEFT)
 frame_explicacao = tk.Frame(frame_ui)
 frame_explicacao.pack(fill=tk.X, padx=5, pady=5)
 
-explicacao_text = tk.Text(frame_explicacao)
-button_explicacao_imagem = tk.Button(frame_explicacao, text="Imagem da Explicação", width=20, font=fonte)
+explicacao_text = tk.Text(frame_explicacao, height=10)
+button_explicacao_imagem = tk.Button(frame_explicacao, text="Imagem", font=fonte)
 
 root.mainloop()

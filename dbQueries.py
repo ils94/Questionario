@@ -9,11 +9,12 @@ Alternativa_C TEXT,
 Alternativa_D TEXT,
 Alternativa_E TEXT,
 Alternativa_Correta TEXT,
-Explicacao BLOB
+Explicacao TEXT,
+Imagem_Explicacao BLOB
 );
 """
 
-insert_query = "INSERT INTO QUESTOES (Enunciado, Image, Alternativa_A, Alternativa_B, Alternativa_C, Alternativa_D, Alternativa_E, Alternativa_Correta, Explicacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+insert_query = "INSERT INTO QUESTOES (Enunciado, Image, Alternativa_A, Alternativa_B, Alternativa_C, Alternativa_D, Alternativa_E, Alternativa_Correta, Explicacao, Imagem_Explicacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 update_query = """
 UPDATE QUESTOES
@@ -25,7 +26,8 @@ Alternativa_C = ?,
 Alternativa_D = ?,
 Alternativa_E = ?,
 Alternativa_Correta = ?,
-Explicacao = ?
+Explicacao = ?,
+Imagem_Explicacao ?
 WHERE ID = ?
 """
 
