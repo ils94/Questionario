@@ -11,6 +11,7 @@ correta = ""
 corretas = 0
 incorretas = 0
 dados = []
+respondida = True
 
 
 def text_wrap(text):
@@ -22,7 +23,7 @@ def text_wrap(text):
 
 
 def conferir_resposta():
-    global correta, corretas, incorretas, dados
+    global correta, corretas, incorretas, dados, respondida
 
     user_choice = var.get()
 
@@ -83,6 +84,8 @@ def conferir_resposta():
             button_explicacao_imagem.pack(side=tk.LEFT, pady=5)
             button_explicacao_imagem.configure(command=lambda: mostrarImagem.mostrar(dados[10]))
 
+        respondida = True
+
 
 def carregar_materia():
     global corretas, incorretas
@@ -94,7 +97,7 @@ def carregar_materia():
 
         filename = filename.replace(".db", "")
 
-        root.title(f"Questonario - Matéria: {filename}")
+        root.title(f"Questonario - {filename}")
 
         variaveisGlobais.dbNAME = db
 
@@ -110,57 +113,60 @@ def carregar_materia():
 
 
 def carregar_questao(event):
-    global correta, dados
+    global correta, dados, respondida
 
-    explicacao_text.forget()
-    button_explicacao_imagem.forget()
+    if respondida:
+        explicacao_text.forget()
+        button_explicacao_imagem.forget()
 
-    dados = dbAcoes.selecionar_questao()
+        dados = dbAcoes.selecionar_questao()
 
-    label_enunciado.config(text=text_wrap(dados[1]))
+        label_enunciado.config(text=text_wrap(dados[1]))
 
-    if checkBase64.is_valid_image(dados[2]):
-        button_imagem.pack(side=tk.LEFT, padx=5, pady=5)
-        button_imagem.configure(command=lambda: mostrarImagem.mostrar(dados[2]))
-    else:
-        button_imagem.forget()
+        if checkBase64.is_valid_image(dados[2]):
+            button_imagem.pack(side=tk.LEFT, padx=5, pady=5)
+            button_imagem.configure(command=lambda: mostrarImagem.mostrar(dados[2]))
+        else:
+            button_imagem.forget()
 
-    if dados[3]:
-        check_button1.pack(side=tk.LEFT)
-        check_button1.config(text="A) " + text_wrap(dados[3]))
-    else:
-        check_button1.forget()
+        if dados[3]:
+            check_button1.pack(side=tk.LEFT)
+            check_button1.config(text="A) " + text_wrap(dados[3]))
+        else:
+            check_button1.forget()
 
-    if dados[4]:
-        check_button2.pack(side=tk.LEFT)
-        check_button2.config(text="B) " + text_wrap(dados[4]))
-    else:
-        check_button2.forget()
+        if dados[4]:
+            check_button2.pack(side=tk.LEFT)
+            check_button2.config(text="B) " + text_wrap(dados[4]))
+        else:
+            check_button2.forget()
 
-    if dados[5]:
-        check_button3.pack(side=tk.LEFT)
-        check_button3.config(text="C) " + text_wrap(dados[5]))
-    else:
-        check_button3.forget()
+        if dados[5]:
+            check_button3.pack(side=tk.LEFT)
+            check_button3.config(text="C) " + text_wrap(dados[5]))
+        else:
+            check_button3.forget()
 
-    if dados[6]:
-        check_button4.pack(side=tk.LEFT)
-        check_button4.config(text="D) " + text_wrap(dados[6]))
-    else:
-        check_button4.forget()
+        if dados[6]:
+            check_button4.pack(side=tk.LEFT)
+            check_button4.config(text="D) " + text_wrap(dados[6]))
+        else:
+            check_button4.forget()
 
-    if dados[7]:
-        check_button5.pack(side=tk.LEFT)
-        check_button5.config(text="E) " + text_wrap(dados[7]))
-    else:
-        check_button5.forget()
+        if dados[7]:
+            check_button5.pack(side=tk.LEFT)
+            check_button5.config(text="E) " + text_wrap(dados[7]))
+        else:
+            check_button5.forget()
 
-    correta = dados[8]
+        correta = dados[8]
 
-    for button in [check_button1, check_button2, check_button3, check_button4, check_button5]:
-        button.config(state="normal", disabledforeground="black")
+        for button in [check_button1, check_button2, check_button3, check_button4, check_button5]:
+            button.config(state="normal", disabledforeground="black")
 
-    var.set(None)
+        var.set(None)
+
+        respondida = False
 
 
 root = tk.Tk()

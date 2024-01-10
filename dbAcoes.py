@@ -110,7 +110,7 @@ def verificar_completo(enunciado):
 
         if row:
             for data in row[1:]:
-                result = result + str(data).replace(" ", "").replace("\n", "")
+                result = result + str(data)
 
         return result
     except Exception as e:

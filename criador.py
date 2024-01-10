@@ -16,7 +16,10 @@ def verificar_questao_existente(enunciado):
         for entry in [entry_1.get(), entry_2.get("1.0", tk.END), entry_3.get(), entry_4.get(), entry_5.get(),
                       entry_6.get(), entry_7.get(), entry_8.get(), entry_9.get("1.0", tk.END),
                       entry_10.get("1.0", tk.END)]:
-            filtro = filtro + entry.replace(" ", "").replace("\n", "").strip()
+            filtro = filtro + entry.strip()
+
+        print(resultado)
+        print(filtro)
 
         if resultado == filtro:
             messagebox.showerror("Erro", "Questão já existe.")
