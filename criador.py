@@ -31,7 +31,9 @@ def verificar_questao_existente(enunciado):
 
 
 def converter_imagem(event, entry):
-    arquivo = filedialog.askopenfilename()
+    image_types = [('Image Files', '*.png;*.jpg;*.jpeg;*.gif;*.bmp;*.ico')]
+
+    arquivo = filedialog.askopenfilename(filetypes=image_types)
 
     if arquivo:
         entry.insert("1.0", convertToBase64.image_to_base64(arquivo))
