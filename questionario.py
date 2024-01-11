@@ -252,7 +252,7 @@ check_button2.pack(side=tk.LEFT)
 frame_c = tk.Frame(frame_alternativas)
 frame_c.pack(fill=tk.X, padx=5, pady=5)
 
-check_button3 = tk.Checkbutton(frame_c, text="...", variable=var, onvalue="C", justify="left", font=fonte,
+check_button3 = tk.Checkbutton(frame_c, variable=var, onvalue="C", justify="left", font=fonte,
                                command=conferir_resposta)
 check_button3.pack(side=tk.LEFT)
 
