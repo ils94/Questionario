@@ -6,6 +6,7 @@ import variaveisGlobais
 import cleanText
 import convertToBase64
 import os
+import mostrarImagem
 
 
 def apagar_tudo():
@@ -201,6 +202,9 @@ entry_2 = tk.Text(frame_1_b, height=1)
 entry_2.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5)
 entry_2.bind("<Double-Button-1>", lambda: converter_imagem(None, entry_2))
 
+button_enunciado_ver_imagem = tk.Button(frame_1_b, text="Visualizar", command=lambda: mostrarImagem.mostrar(entry_2.get("1.0", tk.END)))
+button_enunciado_ver_imagem.pack(side=tk.LEFT)
+
 button_selecionar_imagem_enunciado.configure(command=lambda: converter_imagem(None, entry_2))
 
 frame_1_c = tk.Frame(frame_1)
@@ -279,8 +283,11 @@ button_selecionar_imagem_explicacao = tk.Button(frame_1_i_b, text="Abrir")
 button_selecionar_imagem_explicacao.pack(side=tk.LEFT)
 
 entry_10 = tk.Text(frame_1_i_b, height=1)
-entry_10.pack(fill=tk.X, expand=True, padx=5)
+entry_10.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5)
 entry_10.bind("<Double-Button-1>", lambda event, entry=entry_10: converter_imagem(None, entry))
+
+button_explicacao_ver_imagem = tk.Button(frame_1_i_b, text="Visualizar", command=lambda: mostrarImagem.mostrar(entry_10.get("1.0", tk.END)))
+button_explicacao_ver_imagem.pack(side=tk.LEFT)
 
 button_selecionar_imagem_explicacao.configure(command=lambda: converter_imagem(None, entry_10))
 
