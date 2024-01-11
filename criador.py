@@ -8,6 +8,22 @@ import convertToBase64
 import os
 
 
+def apagar_tudo():
+
+    variaveisGlobais.ID = None
+
+    entry_1.delete(0, tk.END)
+    entry_2.delete("1.0", tk.END)
+    entry_3.delete(0, tk.END)
+    entry_4.delete(0, tk.END)
+    entry_5.delete(0, tk.END)
+    entry_6.delete(0, tk.END)
+    entry_7.delete(0, tk.END)
+    entry_8.delete(0, tk.END)
+    entry_9.delete("1.0", tk.END)
+    entry_10.delete("1.0", tk.END)
+
+
 def abrir_questionario():
     os.startfile("questionario.exe")
 
@@ -158,13 +174,13 @@ menu_button.add_command(label="Carregar DB", command=carregar_db)
 menu_button.add_separator()
 menu_button.add_command(label="Abrir Questionario", command=abrir_questionario)
 
-width = 20
+width = 25
 
 frame_1 = tk.Frame(root)
 frame_1.pack(fill=tk.X, padx=5, pady=5)
 
 frame_1_a = tk.Frame(frame_1)
-frame_1_a.pack(fill=tk.X)
+frame_1_a.pack(fill=tk.X, pady=3)
 
 label_1 = tk.Label(frame_1_a, text="Enunciado:", width=width, anchor=tk.W)
 label_1.pack(side=tk.LEFT)
@@ -173,17 +189,22 @@ entry_1 = tk.Entry(frame_1_a)
 entry_1.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
 frame_1_b = tk.Frame(frame_1)
-frame_1_b.pack(fill=tk.X)
+frame_1_b.pack(fill=tk.X, pady=3)
 
-label_2 = tk.Label(frame_1_b, text="Imagem do Enunciado:", width=width, anchor=tk.W)
+label_2 = tk.Label(frame_1_b, text="Imagem do Enunciado (Base64):", width=width, anchor=tk.W)
 label_2.pack(side=tk.LEFT)
 
+button_selecionar_imagem_enunciado = tk.Button(frame_1_b, text="Abrir")
+button_selecionar_imagem_enunciado.pack(side=tk.LEFT)
+
 entry_2 = tk.Text(frame_1_b, height=1)
-entry_2.pack(side=tk.LEFT, fill=tk.X, expand=True)
-entry_2.bind("<Double-Button-1>", lambda event, entry=entry_2: converter_imagem(None, entry))
+entry_2.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5)
+entry_2.bind("<Double-Button-1>", lambda: converter_imagem(None, entry_2))
+
+button_selecionar_imagem_enunciado.configure(command=lambda: converter_imagem(None, entry_2))
 
 frame_1_c = tk.Frame(frame_1)
-frame_1_c.pack(fill=tk.X)
+frame_1_c.pack(fill=tk.X, pady=3)
 
 label_3 = tk.Label(frame_1_c, text="Alternativa A:", width=width, anchor=tk.W)
 label_3.pack(side=tk.LEFT)
@@ -192,7 +213,7 @@ entry_3 = tk.Entry(frame_1_c)
 entry_3.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
 frame_1_d = tk.Frame(frame_1)
-frame_1_d.pack(fill=tk.X)
+frame_1_d.pack(fill=tk.X, pady=3)
 
 label_4 = tk.Label(frame_1_d, text="Alternativa B:", width=width, anchor=tk.W)
 label_4.pack(side=tk.LEFT)
@@ -201,7 +222,7 @@ entry_4 = tk.Entry(frame_1_d)
 entry_4.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
 frame_1_e = tk.Frame(frame_1)
-frame_1_e.pack(fill=tk.X)
+frame_1_e.pack(fill=tk.X, pady=3)
 
 label_5 = tk.Label(frame_1_e, text="Alternativa C:", width=width, anchor=tk.W)
 label_5.pack(side=tk.LEFT)
@@ -210,7 +231,7 @@ entry_5 = tk.Entry(frame_1_e)
 entry_5.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
 frame_1_f = tk.Frame(frame_1)
-frame_1_f.pack(fill=tk.X)
+frame_1_f.pack(fill=tk.X, pady=3)
 
 label_6 = tk.Label(frame_1_f, text="Alternativa D:", width=width, anchor=tk.W)
 label_6.pack(side=tk.LEFT)
@@ -219,7 +240,7 @@ entry_6 = tk.Entry(frame_1_f)
 entry_6.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
 frame_1_g = tk.Frame(frame_1)
-frame_1_g.pack(fill=tk.X)
+frame_1_g.pack(fill=tk.X, pady=3)
 
 label_7 = tk.Label(frame_1_g, text="Alternativa E:", width=width, anchor=tk.W)
 label_7.pack(side=tk.LEFT)
@@ -228,7 +249,7 @@ entry_7 = tk.Entry(frame_1_g)
 entry_7.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
 frame_1_h = tk.Frame(frame_1)
-frame_1_h.pack(fill=tk.X)
+frame_1_h.pack(fill=tk.X, pady=3)
 
 label_8 = tk.Label(frame_1_h, text="Alternativa Correta:", width=width, anchor=tk.W)
 label_8.pack(side=tk.LEFT)
@@ -237,10 +258,10 @@ entry_8 = tk.Entry(frame_1_h)
 entry_8.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
 frame_1_i = tk.Frame(frame_1)
-frame_1_i.pack(fill=tk.X, expand=True)
+frame_1_i.pack(fill=tk.X, pady=3)
 
 frame_1_i_a = tk.Frame(frame_1_i)
-frame_1_i_a.pack(fill=tk.X, expand=True)
+frame_1_i_a.pack(fill=tk.X, expand=True, pady=3)
 
 label_9 = tk.Label(frame_1_i_a, text="Explicação:", width=width, anchor=tk.W)
 label_9.pack(side=tk.LEFT)
@@ -249,23 +270,31 @@ entry_9 = tk.Text(frame_1_i, height=10)
 entry_9.pack(fill=tk.BOTH, expand=True)
 
 frame_1_i_b = tk.Frame(frame_1_i)
-frame_1_i_b.pack(fill=tk.X, expand=True)
+frame_1_i_b.pack(fill=tk.X, expand=True, pady=3)
 
-label_10 = tk.Label(frame_1_i_b, text="Imagem da Explicação:", width=width, anchor=tk.W)
+label_10 = tk.Label(frame_1_i_b, text="Imagem da Explicação (Base64):", width=width, anchor=tk.W)
 label_10.pack(side=tk.LEFT)
 
+button_selecionar_imagem_explicacao = tk.Button(frame_1_i_b, text="Abrir")
+button_selecionar_imagem_explicacao.pack(side=tk.LEFT)
+
 entry_10 = tk.Text(frame_1_i_b, height=1)
-entry_10.pack(fill=tk.BOTH, expand=True, pady=5)
+entry_10.pack(fill=tk.X, expand=True, padx=5)
 entry_10.bind("<Double-Button-1>", lambda event, entry=entry_10: converter_imagem(None, entry))
 
+button_selecionar_imagem_explicacao.configure(command=lambda: converter_imagem(None, entry_10))
+
 frame_2 = tk.Frame(frame_1)
-frame_2.pack(fill=tk.X, pady=5)
+frame_2.pack(fill=tk.X, pady=3)
 
 button_adicionar = tk.Button(frame_2, text="Adicionar", width=15, command=inserir)
 button_adicionar.pack(side=tk.LEFT)
 
-button_editar = tk.Button(frame_2, text="Editar", width=15, command=alterar)
+button_editar = tk.Button(frame_2, text="Alterar", width=15, command=alterar)
 button_editar.pack(side=tk.LEFT, padx=5)
+
+button_apagar = tk.Button(frame_2, text="Apagar Tudo", width=15, command=apagar_tudo)
+button_apagar.pack(side=tk.LEFT)
 
 button_deletar = tk.Button(frame_2, text="Deletar", width=15, command=deletar)
 button_deletar.pack(side=tk.RIGHT)
@@ -311,7 +340,7 @@ treeview.grid(row=0, column=0, sticky="nsew")
 treeview.bind("<<TreeviewSelect>>", on_click)
 
 pesquisar_frame = tk.Frame(root)
-pesquisar_frame.pack(fill=tk.X, padx=2)
+pesquisar_frame.pack(fill=tk.X, padx=5, pady=5)
 
 label_pesquisar = tk.Label(pesquisar_frame, text="Pesquisar:", anchor=tk.W)
 label_pesquisar.pack(side=tk.LEFT)
