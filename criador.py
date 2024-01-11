@@ -309,7 +309,7 @@ treeview['columns'] = (
     "ALTERNATIVA E", "ALTERNATIVA CORRETA", "EXPLICAÇÃO", "IMAGEM DA EXPLICAÇÃO")
 
 treeview.column("#0", width=0, minwidth=0)
-treeview.column("ID", width=10, minwidth=10)
+treeview.column("ID", width=50, minwidth=50)
 
 treeview.heading("#0", text="")
 treeview.heading("ID", text="ID")
