@@ -92,7 +92,7 @@ def conferir_resposta():
 
 
 def carregar_materia():
-    global corretas, incorretas
+    global corretas, incorretas, respondida
 
     db = filedialog.askopenfilename(defaultextension=".db", filetypes=[("DB files", "*.db")])
 
@@ -111,9 +111,11 @@ def carregar_materia():
         label_corretas.configure(text="0 CORRETAS")
         label_incorretas.configure(text="INCORRETAS 0")
 
-        carregar_questao(None)
-
         frame_ui.pack(fill=tk.BOTH, expand=True)
+
+        respondida = True
+
+        carregar_questao(None)
 
 
 def carregar_questao(event):
