@@ -351,5 +351,6 @@ entry_pesquisar.bind("<Return>", pesquisar)
 
 variaveisGlobais.treeview = treeview
 variaveisGlobais.pesquisar_entry = entry_pesquisar
+variaveisGlobais.root = root
 
 root.mainloop()

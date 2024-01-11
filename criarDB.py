@@ -2,6 +2,7 @@ import sqlite3
 from tkinter import filedialog
 import dbQueries
 import variaveisGlobais
+import os
 
 
 def criar_db():
@@ -17,3 +18,9 @@ def criar_db():
         conn.close()
 
         variaveisGlobais.dbNAME = output_file
+
+        filename = os.path.basename(output_file)
+
+        filename = filename.replace(".db", "")
+
+        variaveisGlobais.root.title(f"Criador - {filename}")
